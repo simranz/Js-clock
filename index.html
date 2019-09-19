@@ -1,0 +1,116 @@
+<html>
+	<head>
+		<style>
+			.clock-digit {
+				display: inline-block;
+			}
+			.clock-digit-upper {
+				border: 3px solid #eee;
+				border-radius: 10%;
+				height: 30px;
+				width: 25px;
+			}
+			.clock-digit-lower {
+				border: 3px solid #eee;
+				border-top: 0;
+				border-radius: 10%;
+				height: 30px;
+				width: 25px;
+			}
+			.left {
+				border-left-color: black;
+			}
+			.right {
+				border-right-color: black;
+			}
+			.top {
+				border-top-color: black;
+			}
+			.bottom {
+				border-bottom-color: black;
+			}
+			.all {
+				border-color: black;
+			}
+
+		</style>
+	</head>
+	<body>
+		<div id="clock"></div>
+		<script>
+			
+			//Make a box digit for a particular number
+			var box = (number) => {
+				return `
+					<div class="clock-digit">
+						<div class="clock-digit-upper ${classListTop(number)}"></div>
+						<div class="clock-digit-lower ${classListBottom(number)}"></div>
+					</div>
+				`;
+			}
+
+			//returns which parts are highlighted for which digit on the top box
+			var classListTop = (number) => {
+				switch(number) {
+					case "0": return "left top right"
+					case "1": return "right"
+					case "2": return "top right bottom"
+					case "3": return "top right bottom"
+					case "4": return "left bottom right"
+					case "5": return "top left bottom"
+					case "6": return "top left bottom"
+					case "7": return "top right"
+					case "8": return "all"
+					case "9": return "all"
+				}
+			}
+			
+			//returns which parts are highlighted for which digit on the bottom box
+			var classListBottom = (number) => {
+				switch(number) {
+					case "0": return "all"
+					case "1": return "right"
+					case "2": return "left bottom"
+					case "3": return "right bottom"
+					case "4": return "right"
+					case "5": return "right bottom"
+					case "6": return "all"
+					case "7": return "right"
+					case "8": return "all"
+					case "9": return "right bottom"
+				}
+			}
+
+			//Make boxes for all digits in hours, mins and seconds
+			var showClock = ( hours, minutes, seconds ) => {
+				return `
+					${ hours.map( h => box(h) ).join('') } :
+					${ minutes.map( m => box(m) ).join('') } :
+					${ seconds.map( s => box(s) ).join('') }
+				`;
+			}
+
+			//Get the time, returns array of split digits of all hours, mins and seconds
+			var getTime = () => {
+				let now = new Date();
+				let hours = now.getHours().toString().split('');
+				let minutes = now.getMinutes().toString().split('');
+				let seconds = now.getSeconds().toString().split('');
+				
+				//if single digit then add 0 at front
+				hours = ( hours.length < 2 ) ? hours.unshift('0') : hours;
+				minutes = ( minutes.length < 2 ) ? minutes.unshift('0') : minutes;
+				seconds = ( seconds.length < 2 ) ? seconds.unshift('0') : seconds;
+				
+				return [hours, minutes, seconds];
+			}
+
+			//Show the clock
+			var clock = document.querySelector('#clock');
+			setInterval( () => {
+				clock.innerHTML = showClock( ...getTime() );
+			}, 1000);
+
+		</script>
+	</body>
+</html>
